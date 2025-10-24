@@ -1,0 +1,35 @@
+{
+  "name": "opengraph-cli",
+  "version": "1.0.0",
+  "description": "CLI tool to preview OpenGraph metadata from web and local servers",
+  "type": "module",
+  "bin": {
+    "opengraph-cli": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target node --format esm",
+    "dev": "bun run src/index.ts",
+    "start": "bun run src/index.ts",
+    "release:patch": "npm run build && npm version patch && npm publish --access public",
+    "release:minor": "npm run build && npm version minor && npm publish --access public",
+    "release:major": "npm run build && npm version major && npm publish --access public"
+  },
+  "keywords": [
+    "opengraph",
+    "og",
+    "metadata",
+    "preview",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "cheerio": "^1.1.2"
+  }
+}
