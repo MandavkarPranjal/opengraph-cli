@@ -2,6 +2,7 @@
 
 import { getOpenGraphData } from "./parser";
 import { formatOpenGraphData, formatError } from "./formatter";
+import clipboard from "clipboardy";
 
 function showHelp() {
   console.log(`
@@ -18,6 +19,7 @@ Examples:
 Description:
   Fetches and displays OpenGraph metadata from web URLs and local servers.
   Supports both remote URLs and local development servers.
+  If an og:image is found, its URL will be copied to the clipboard.
 `);
   process.exit(0);
 }
@@ -51,6 +53,15 @@ async function main() {
     }
 
     console.log(formatOpenGraphData(ogData, url));
+
+    if (ogData.image) {
+      try {
+        await clipboard.write(ogData.image);
+        console.log(`\n✓ Image URL copied to clipboard\n`);
+      } catch (error) {
+        console.error(formatError(`Failed to copy image URL to clipboard: ${error instanceof Error ? error.message : String(error)}`));
+      }
+    }
   } catch (error) {
     console.error(
       formatError(error instanceof Error ? error.message : String(error))
