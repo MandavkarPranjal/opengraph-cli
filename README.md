@@ -1,4 +1,4 @@
-# OpenGraph Preview CLI
+# OpenGraph CLI
 
 A CLI tool to fetch and display OpenGraph metadata from web URLs and local servers.
 
@@ -62,20 +62,6 @@ After building, you can run the compiled version:
 ## Requirements
 
 - [Bun](https://bun.sh) runtime
-
-## Project Structure
-
-```
-og-preview-cli/
-├── src/
-│   ├── index.ts       # CLI entry point
-│   ├── parser.ts      # OpenGraph metadata parser
-│   ├── formatter.ts   # Output formatting
-│   └── types.ts       # TypeScript types
-├── dist/              # Compiled output
-├── package.json
-└── README.md
-```
 
 ## License
 
