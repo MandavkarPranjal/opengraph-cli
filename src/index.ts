@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 
 import { getOpenGraphData } from "./parser";
-import { formatOpenGraphData, formatError } from "./formatter";
+import { formatOpenGraphData, formatError, formatPerformanceMetrics } from "./formatter";
+import type { PerformanceMetrics } from "./types";
 import clipboard from "clipboardy";
 
 function showHelp() {
@@ -10,16 +11,22 @@ OpenGraph Preview CLI
 
 Usage:
   opengraph-cli <url>              Fetch and display OpenGraph metadata from a URL
+  opengraph-cli <url> --nerd       Show performance metrics
+  opengraph-cli --nerd <url>       Show performance metrics
   opengraph-cli --help, -h         Show this help message
 
 Examples:
   opengraph-cli https://example.com
   opengraph-cli http://localhost:3000
+  opengraph-cli https://example.com --nerd
+  opengraph-cli --nerd https://example.com
 
 Description:
   Fetches and displays OpenGraph metadata from web URLs and local servers.
   Supports both remote URLs and local development servers.
   If an og:image is found, its URL will be copied to the clipboard.
+
+  Use --nerd flag to display performance metrics.
 `);
     process.exit(0);
 }
@@ -31,7 +38,8 @@ async function main() {
         showHelp();
     }
 
-    const url = args[0];
+    const showNerd = args.includes("--nerd");
+    const url = args.find(arg => !arg.startsWith("--"));
 
     if (!url) {
         console.error(formatError("No URL provided."));
@@ -44,8 +52,10 @@ async function main() {
     }
 
     try {
+        const totalStart = performance.now();
+
         console.log(`\nFetching OpenGraph data from: ${url}...`);
-        const ogData = await getOpenGraphData(url);
+        const { data: ogData, fetchMs, parseMs } = await getOpenGraphData(url);
 
         if (Object.keys(ogData).length === 0) {
             console.log(formatError("No OpenGraph metadata found on this page."));
@@ -54,13 +64,28 @@ async function main() {
 
         console.log(formatOpenGraphData(ogData, url));
 
+        let clipboardMs: number | undefined;
         if (ogData.image) {
             try {
+                const clipboardStart = performance.now();
                 await clipboard.write(ogData.image);
+                clipboardMs = performance.now() - clipboardStart;
                 console.log(`\n✓ Image URL copied to clipboard\n`);
             } catch (error) {
                 console.error(formatError(`Failed to copy image URL to clipboard: ${error instanceof Error ? error.message : String(error)}`));
             }
+        }
+
+        const totalMs = performance.now() - totalStart;
+
+        if (showNerd) {
+            const metrics: PerformanceMetrics = {
+                fetchMs,
+                parseMs,
+                clipboardMs,
+                totalMs
+            };
+            console.log(formatPerformanceMetrics(metrics));
         }
     } catch (error) {
         console.error(

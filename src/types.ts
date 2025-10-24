@@ -8,3 +8,10 @@ export interface OpenGraphData {
   locale?: string;
   [key: string]: string | undefined;
 }
+
+export interface PerformanceMetrics {
+  fetchMs: number;
+  parseMs: number;
+  clipboardMs?: number;
+  totalMs: number;
+}

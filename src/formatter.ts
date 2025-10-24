@@ -1,4 +1,4 @@
-import type { OpenGraphData } from "./types";
+import type { OpenGraphData, PerformanceMetrics } from "./types";
 
 const colors = {
   reset: "\x1b[0m",
@@ -50,4 +50,24 @@ export function formatOpenGraphData(data: OpenGraphData, url: string): string {
 
 export function formatError(error: string): string {
   return `\n${colors.bright}${colors.magenta}Error:${colors.reset} ${error}\n`;
+}
+
+export function formatPerformanceMetrics(metrics: PerformanceMetrics): string {
+  const lines: string[] = [];
+  
+  lines.push(`\n${colors.bright}${colors.yellow}Performance Metrics${colors.reset}`);
+  lines.push(`${colors.dim}${"=".repeat(50)}${colors.reset}\n`);
+  
+  lines.push(`${colors.green}Fetch Time:${colors.reset} ${metrics.fetchMs.toFixed(2)}ms (${(metrics.fetchMs / 1000).toFixed(3)}s)`);
+  lines.push(`${colors.green}Parse Time:${colors.reset} ${metrics.parseMs.toFixed(2)}ms (${(metrics.parseMs / 1000).toFixed(3)}s)`);
+  
+  if (metrics.clipboardMs !== undefined) {
+    lines.push(`${colors.green}Clipboard Time:${colors.reset} ${metrics.clipboardMs.toFixed(2)}ms (${(metrics.clipboardMs / 1000).toFixed(3)}s)`);
+  }
+  
+  lines.push(`${colors.green}Total Time:${colors.reset} ${metrics.totalMs.toFixed(2)}ms (${(metrics.totalMs / 1000).toFixed(3)}s)`);
+  
+  lines.push(`\n${colors.dim}${"=".repeat(50)}${colors.reset}\n`);
+  
+  return lines.join("\n");
 }

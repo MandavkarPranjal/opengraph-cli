@@ -42,7 +42,14 @@ export function parseOpenGraph(html: string): OpenGraphData {
   return ogData;
 }
 
-export async function getOpenGraphData(url: string): Promise<OpenGraphData> {
+export async function getOpenGraphData(url: string): Promise<{ data: OpenGraphData; fetchMs: number; parseMs: number }> {
+  const fetchStart = performance.now();
   const html = await fetchHTML(url);
-  return parseOpenGraph(html);
+  const fetchMs = performance.now() - fetchStart;
+  
+  const parseStart = performance.now();
+  const data = parseOpenGraph(html);
+  const parseMs = performance.now() - parseStart;
+  
+  return { data, fetchMs, parseMs };
 }
