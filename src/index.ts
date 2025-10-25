@@ -155,17 +155,25 @@ async function main() {
             console.log(formatOpenGraphData(ogData, url));
 
             if (ogData.image) {
+                const imageUrl = (() => {
+                    try { return new URL(ogData.image, url).toString(); } catch { return undefined; }
+                })();
+                if (!imageUrl) {
+                    console.error(formatError("og:image is not a valid URL and could not be resolved against the page URL"));
+                    // continue without image actions
+                }
+
                 if (showImage) {
                     const kittySupported = isKittySupported();
 
-                    if (kittySupported) {
+                    if (kittySupported && imageUrl) {
                         try {
                             const renderStart = performance.now();
-                            await renderKittyImage(imageUrl!);
+                            await renderKittyImage(imageUrl);
                             renderMs = performance.now() - renderStart;
 
                             const clipboardStart = performance.now();
-                            await clipboard.write(ogData.image);
+                            await clipboard.write(imageUrl);
                             clipboardMs = performance.now() - clipboardStart;
                             console.log(`\n✓ Image rendered and URL copied to clipboard\n`);
                         } catch (error) {
@@ -174,7 +182,7 @@ async function main() {
                                 // Graceful fallback for non-interactive environments
                                 try {
                                     const clipboardStart = performance.now();
-                                    await clipboard.write(ogData.image);
+                                    await clipboard.write(imageUrl);
                                     clipboardMs = performance.now() - clipboardStart;
                                     console.log(`\n✓ Image URL copied to clipboard (kitty not available in this environment)\n`);
                                 } catch (clipError) {
@@ -184,7 +192,7 @@ async function main() {
                                 console.error(formatError(`Failed to render image: ${errorMessage}`));
                                 try {
                                     const clipboardStart = performance.now();
-                                    await clipboard.write(ogData.image);
+                                    await clipboard.write(imageUrl);
                                     clipboardMs = performance.now() - clipboardStart;
                                     console.log(`\n✓ Image URL copied to clipboard\n`);
                                 } catch (clipError) {
