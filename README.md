@@ -12,11 +12,11 @@ bun install -g opengraph-cli
 
 ![Demo](https://vhs.charm.sh/vhs-1NpNrEIDCjILKFMilBtSTw.gif)
 
-## Nerd Option
+### Nerd Option
 
 ![Nerd Demo](https://vhs.charm.sh/vhs-NGoJncTyZBUBSe5J4P1OD.gif)
 
-## Recommended
+## Personal Recommended
 
 ```bash
 # .zshrc
