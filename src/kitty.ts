@@ -7,7 +7,7 @@ export function isKittySupported(): boolean {
 export async function renderKittyImage(imageUrl: string): Promise<void> {
     try {
         // Use kitty's icat kitten to display the image (avoid shell; pass args)
-        execFileSync("kitty", ["+kitten", "icat", "--align", "left", "--scale-up", imageUrl], {
+        execFileSync("kitty", ["+kitten", "icat", "--align", "left", "--scale-up", "--", imageUrl], {
             stdio: "inherit",
             timeout: 15000
         });

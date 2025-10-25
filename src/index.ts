@@ -93,16 +93,24 @@ async function main() {
         if (imageOnly) {
             // Display only the image
             if (ogData.image) {
+                const imageUrl = (() => {
+                    try { return new URL(ogData.image, url).toString(); } catch { return undefined; }
+                })();
+                if (!imageUrl) {
+                    console.error(formatError("og:image is not a valid URL and could not be resolved against the page URL"));
+                    // continue without image actions
+                }
+
                 const kittySupported = isKittySupported();
 
-                if (kittySupported) {
+                if (kittySupported && imageUrl) {
                     try {
                         const renderStart = performance.now();
-                        await renderKittyImage(ogData.image);
+                        await renderKittyImage(imageUrl);
                         renderMs = performance.now() - renderStart;
 
                         const clipboardStart = performance.now();
-                        await clipboard.write(ogData.image);
+                        await clipboard.write(imageUrl);
                         clipboardMs = performance.now() - clipboardStart;
                         console.log(`\n✓ Image displayed and URL copied to clipboard\n`);
                     } catch (error) {
@@ -111,7 +119,7 @@ async function main() {
                             // Graceful fallback for non-interactive environments
                             try {
                                 const clipboardStart = performance.now();
-                                await clipboard.write(ogData.image);
+                                await clipboard.write(imageUrl!);
                                 clipboardMs = performance.now() - clipboardStart;
                                 console.log(`\n✓ Image URL copied to clipboard (kitty not available in this environment)\n`);
                             } catch (clipError) {
@@ -153,7 +161,7 @@ async function main() {
                     if (kittySupported) {
                         try {
                             const renderStart = performance.now();
-                            await renderKittyImage(ogData.image);
+                            await renderKittyImage(imageUrl!);
                             renderMs = performance.now() - renderStart;
 
                             const clipboardStart = performance.now();

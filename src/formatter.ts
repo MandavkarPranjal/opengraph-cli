@@ -17,7 +17,7 @@ export function formatOpenGraphData(data: OpenGraphData, url: string): string {
     lines.push(`\n${colors.bright}${colors.cyan}OpenGraph Preview${colors.reset}`);
     lines.push(`${colors.dim}${"=".repeat(50)}${colors.reset}\n`);
 
-    lines.push(`${colors.bright}URL:${colors.reset} ${colors.blue}${url}${colors.reset}\n`);
+    lines.push(`${colors.bright}Page URL:${colors.reset} ${colors.blue}${url}${colors.reset}\n`);
 
     const formatField = (label: string, value: string | undefined) => {
         if (value) {
@@ -28,13 +28,15 @@ export function formatOpenGraphData(data: OpenGraphData, url: string): string {
     formatField("Title", data.title);
     formatField("Description", data.description);
     formatField("Image", data.image);
-    formatField("URL", data.url);
+    formatField("og:url", data.url);
     formatField("Type", data.type);
     formatField("Site Name", data.siteName);
     formatField("Locale", data.locale);
 
     const standardKeys = ["title", "description", "image", "url", "type", "siteName", "locale"];
-    const otherKeys = Object.keys(data).filter((key) => !standardKeys.includes(key));
+    const otherKeys = Object.keys(data)
+        .filter((key) => !standardKeys.includes(key))
+        .sort();
 
     if (otherKeys.length > 0) {
         lines.push(`\n${colors.yellow}Other Properties:${colors.reset}`);

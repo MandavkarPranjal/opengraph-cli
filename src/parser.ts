@@ -2,14 +2,18 @@ import * as cheerio from "cheerio";
 import type { OpenGraphData } from "./types";
 
 export async function fetchHTML(url: string): Promise<string> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, { signal: controller.signal });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return await response.text();
     } catch (error) {
         throw new Error(`Failed to fetch URL: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+        clearTimeout(timeout);
     }
 }
 
@@ -22,11 +26,10 @@ export function parseOpenGraph(html: string): OpenGraphData {
         const content = $(element).attr("content");
 
         if (property && content) {
-            const key = property.replace("og:", "");
-            const camelCaseKey = key.replace(/_([a-z])/g, (_, letter) =>
-                letter.toUpperCase()
-            );
-            ogData[camelCaseKey] = content;
+            const raw = property.slice(3); // drop "og:"
+            const normalized = raw.replace(/:/g, "_");
+            const camel = normalized.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+            ogData[camel] = content;
         }
     });
 
