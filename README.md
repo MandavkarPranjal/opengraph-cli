@@ -16,4 +16,18 @@ bun install -g opengraph-cli
 
 ![Nerd Demo](https://vhs.charm.sh/vhs-NGoJncTyZBUBSe5J4P1OD.gif)
 
+## Recommended
+
+```bash
+# .zshrc
+alias og='opengraph-cli'
+
+# .bashrc
+alias og='opengraph-cli'
+
+# powershell (windows)
+# $PROFILE
+Set-Alias og opengraph-cli
+```
+
 GIF's made with [VHS](https://github.com/charmbracelet/vhs)
