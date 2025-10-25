@@ -16,6 +16,19 @@ bun install -g opengraph-cli
 
 ![Nerd Demo](https://vhs.charm.sh/vhs-NGoJncTyZBUBSe5J4P1OD.gif)
 
+## Image Support
+no Windows OS support
+
+```bash
+og -i <url>
+
+# display only image
+og -io <url>
+
+# display only image with nerd option
+og -i -n <url>
+```
+
 ## Personal Recommended
 
 ```bash
