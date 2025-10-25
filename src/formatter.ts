@@ -60,11 +60,15 @@ export function formatPerformanceMetrics(metrics: PerformanceMetrics): string {
   
   lines.push(`${colors.green}Fetch Time:${colors.reset} ${metrics.fetchMs.toFixed(2)}ms (${(metrics.fetchMs / 1000).toFixed(3)}s)`);
   lines.push(`${colors.green}Parse Time:${colors.reset} ${metrics.parseMs.toFixed(2)}ms (${(metrics.parseMs / 1000).toFixed(3)}s)`);
-  
+
+  if (metrics.renderMs !== undefined) {
+    lines.push(`${colors.green}Render Time:${colors.reset} ${metrics.renderMs.toFixed(2)}ms (${(metrics.renderMs / 1000).toFixed(3)}s)`);
+  }
+
   if (metrics.clipboardMs !== undefined) {
     lines.push(`${colors.green}Clipboard Time:${colors.reset} ${metrics.clipboardMs.toFixed(2)}ms (${(metrics.clipboardMs / 1000).toFixed(3)}s)`);
   }
-  
+
   lines.push(`${colors.green}Total Time:${colors.reset} ${metrics.totalMs.toFixed(2)}ms (${(metrics.totalMs / 1000).toFixed(3)}s)`);
   
   lines.push(`\n${colors.dim}${"=".repeat(50)}${colors.reset}\n`);

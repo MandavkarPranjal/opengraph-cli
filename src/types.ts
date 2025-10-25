@@ -13,5 +13,6 @@ export interface PerformanceMetrics {
   fetchMs: number;
   parseMs: number;
   clipboardMs?: number;
+  renderMs?: number;
   totalMs: number;
 }
